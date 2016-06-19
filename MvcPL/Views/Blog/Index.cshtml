@@ -1,0 +1,12 @@
+﻿@model IEnumerable<MvcPL.Models.FullBlogViewModel>
+@{
+    ViewBag.Title = "Index";
+}
+
+
+<div class="col-lg-10">
+    @foreach(var blog in Model)
+    {        
+        <a href="@Url.Action("Index", "Blog", new {id = @blog.Id})">@blog.Name</a>
+    }
+</div>

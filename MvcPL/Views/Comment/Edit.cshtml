@@ -1,0 +1,29 @@
+﻿@model MvcPL.Models.FullCommentViewModel
+
+@{
+    ViewBag.Title = "Edit";
+}
+@using (@Html.BeginForm("Edit", "Comment", FormMethod.Post, new {enctype = "multipart/form-data", @class = "form-horizontal", role = "form"}))
+{
+    @Html.HiddenFor(model => model.ArticleId)
+    @Html.HiddenFor(model => model.DateTime)
+    <div class="panel panel-default col-md-offset-2" id="@Model.Id">
+        <div class="panel-body">
+            <img style="width: 50px; height: 50px;" src=@Model.User.AvatarPath alt="No avatar"/>
+            <span style="font-size: 12px;">@Model.User.Name </span>
+            <span style="font-size: 12px;"> @Model.DateTime</span>
+            <div class="form-group">
+                <label class="col-md-2 control-label">Comment</label>
+                <div>
+                    @Html.TextBoxFor(model => model.Text, new {@class = "form-control", @required = true})
+                    @Html.ValidationMessageFor(model => model.Text, null, new {@class = "col-md-offset-2"})
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-offset-2">
+                    <input type="submit" class="btn btn-primary" value="Edit"/>
+                </div>
+            </div>
+        </div>
+    </div>
+}

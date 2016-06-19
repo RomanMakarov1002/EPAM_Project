@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/Content/bootstrapcss")
+    @Styles.Render("~/Content/searchcss")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrapjs")
+   
+</head>
+<body>
+<div class="navbar navbar-default">
+    <div class="container">
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li>@Html.ActionLink("Articles", "Index", "Article")</li>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <li> @Html.ActionLink("Profile", "Profile", "Blog")</li>
+                }
+            </ul>
+            <div class="col-sm-5 col-md-5" style="padding-top: 10px; align-self: center ">
+                    <div class="input-group">
+                        <input type="text" name="term" id="searchInput" class="form-control" />
+                        <div class="input-group-btn">
+                            <a href=@Url.Action("By","Search") class="btn btn-default"><i class="glyphicon glyphicon-search"></i></a>
+                        </div>
+                    </div>
+            </div>
+            @Html.Partial("_LoginPartial")
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+        $(function () {
+            var autocompleteUrl = '@Url.Action("FindMatches", "Search")';
+            $("input#searchInput").autocomplete({
+                source: autocompleteUrl,
+                minLength: 2,
+                select: function(event, ui) {
+                    window.location.href = '@Url.Action("Index","Search")'+'/By/' + ui.item.label;
+                }
+            });
+        });
+</script>
+
+@RenderBody()
+@RenderSection("Scripts", false)
+</body>
+</html>

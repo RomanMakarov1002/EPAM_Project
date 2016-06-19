@@ -1,0 +1,10 @@
+﻿@model IEnumerable<MvcPL.Models.SimpleRoleViewModel>
+    @foreach (var item in Model)
+    {
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="Role" value="@item.Id"> @Html.DisplayFor(m => item.Name)
+            </label>
+        </div>
+    }
+

@@ -1,0 +1,46 @@
+﻿@model MvcPL.Models.PagingViewModel<MvcPL.Models.FullArticleViewModel>
+@using MvcPL.Infrastructure
+@{
+  ViewBag.Title = "SortedByTag";
+}
+
+<script>
+    $(document).ready(function() {
+        $('.btn-default').click(function() {
+            var chosenPage = this.innerHTML;
+            $.ajax({
+                type: "GET",
+                url: "/Article/SortedByTag",
+                data: { page: chosenPage, id : @Model.Id },
+                success : function(content) {
+                    $('#ArtContainer').html(content);
+                    $(".btn").removeClass("btn-primary selected");
+                    $("#page" + chosenPage + "").addClass("btn-primary selected");
+
+                }
+            });
+            return false;
+        });
+    })
+
+</script>
+
+<div class="col-lg-10">
+    <h2 style="text-align: center">Sorted by tag <label class="label label-success" style="text-decoration: white;"> @Model.Name </label></h2>
+    <hr/>
+    <div id="ArtContainer">
+        @Html.Partial("ContentPartial")
+    </div>
+    <div class="btn-group col-md-offset-2">
+        @Html.PageLink(Model.Paging, x => Url.Action("SortedByTag", new { page = x, id = @Model.Id}))
+    </div>
+</div>
+    
+<div class="col-lg-offset-10">
+    <div class="form-group ">
+        @Html.Action("GetAllTags", "Article")
+    </div>
+    <div class="form-group ">
+        @Html.Action("GetAllBlogs", "Blog")
+    </div>
+</div>

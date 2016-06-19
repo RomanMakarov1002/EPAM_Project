@@ -1,0 +1,62 @@
+﻿@if (Request.IsAuthenticated)
+{
+    using (Html.BeginForm("LogOff", "User", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <ul class="nav navbar-nav navbar-right">
+            @if (User.IsInRole("Administrator"))
+            {
+                <li>@Html.ActionLink("Users", "Index", "User")</li>
+                <li>@Html.ActionLink("Tags", "Index", "Tag")</li>
+            }
+            <li>                                                        
+                @Html.ActionLink("Hello, " + User.Identity.Name , "Details", "User", new {nickname = User.Identity.Name}, htmlAttributes: new { title = "Manage" })
+            </li>
+            <li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
+        </ul>
+    }
+}
+else
+{
+    <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                Login
+                <span class="caret"></span>
+            </a>
+            <ul id="" class="dropdown-menu" style="min-width: 250px">
+                <li>
+                    <div class="row">
+                        <div class="col-md-10 col-md-offset-1">
+                            @using (Html.BeginForm("SignIn", "User", FormMethod.Post))
+                            {
+                                @Html.AntiForgeryToken()
+                                <div class="form-group">
+                                    <label class="sr-only" for="NickName">NickName</label>
+                                    <input type="text" class="form-control" id="NickName" name="NickName" placeholder="NickName" required>
+                                </div>
+                                        <div class="form-group">
+                                            <label class="sr-only" for="Password">Password</label>
+                                            <input type="password" class="form-control" id="Password" name="Password" placeholder="Password" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <button type="submit" class="btn btn-primary btn-block" value="SignIn">Sign in</button>
+                                        </div>
+
+                                        <div class="help-block text-left">
+                                            <label> New to Blog?</label>
+                                        </div>
+                                        <div class="form-group">
+                                            @Html.ActionLink("Register", "Registration", "User", null, new { @class = "btn btn-primary btn-block" })
+                                        </div>
+                            }
+
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </li>
+
+    </ul>
+}

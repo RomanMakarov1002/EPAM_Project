@@ -1,0 +1,14 @@
+﻿@model IEnumerable<MvcPL.Models.SimpleBlogViewModel>
+<div class="form-group ">
+    <label class="control-label col-md-2">Blog</label>
+    <div class="col-md-offset-2">
+        <select class="form-control " name="BlogId">
+            <option value="" selected="selected" content="empty" class="text-muted">Select blog</option>
+            @foreach (var blog in Model)
+            {
+                <option value="@blog.Id">@blog.Name</option>
+            }
+        </select>
+        <span class="field-validation-error text-danger" data-valmsg-for="Blog" data-valmsg-replace="true"></span>
+    </div>
+</div>

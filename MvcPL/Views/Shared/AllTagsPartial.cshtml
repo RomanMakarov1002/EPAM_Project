@@ -1,0 +1,14 @@
+﻿@model IEnumerable<MvcPL.Models.SimpleTagViewModel>
+
+@{
+    ViewBag.Title = "AllTagsPartial";
+}
+
+<h4 style="margin: 7px;">Tags: </h4>
+<div class="btn-group-vertical">
+    @foreach (var item in Model)
+    {
+        <a href=@Url.Action("SortedByTag","Article", new {id = item.Id}) class="btn btn-success" style="margin: 7px">@item.Name</a>
+    }
+</div>
+

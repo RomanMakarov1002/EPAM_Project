@@ -1,0 +1,28 @@
+﻿@model BLL.Interfacies.Entities.SearchModel
+@{
+    ViewBag.Title = "Search results";
+}
+<div class="col-lg-10">
+    <h2> Search results: </h2>
+        @if (Model != null) { 
+        if (Model.Tags != null)
+        {
+            foreach (var tag in Model.Tags)
+            {
+            <div>
+                <h4><a href=@Url.Action("SortedByTag", "Article", new {Id = tag.Id})>|Tag|   @tag.Name </a></h4>
+            </div>
+            }
+        }
+        if (Model.Articles != null)
+        {
+            foreach (var article in Model.Articles)
+            {
+            <div>
+                <h4><a href=@Url.Action("Details", "Article", new {id = article.Id})>|Article|   @article.Title</a></h4>
+            </div>
+            }
+        }
+        }
+
+</div>

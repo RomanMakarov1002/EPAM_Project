@@ -1,0 +1,44 @@
+﻿@model MvcPL.Models.PagingViewModel<MvcPL.Models.FullArticleViewModel>
+@using MvcPL.Infrastructure
+@{
+    ViewBag.Title = "Index";
+}
+<script>
+    $(document).ready(function() {
+        $('.btn-default').click(function() {
+            var chosenPage = this.innerHTML;
+            $.ajax({
+                type: "GET",
+                url: "Article/Index",
+                data: { page: chosenPage },
+                success : function(content) {
+                    $('#ArtContainer').html(content);
+                    $(".btn").removeClass("btn-primary selected");
+                    $("#page" + chosenPage + "").addClass("btn-primary selected");
+                }
+            });
+            return false;
+        });
+    })
+</script>
+
+<div class="col-lg-10">
+    <h2 style="text-align: center">Articles</h2>
+    <hr />
+    <div id="ArtContainer">
+        @Html.Partial("ContentPartial")
+    </div>
+    <div class="btn-group col-md-offset-2">
+        @Html.PageLink(Model.Paging, x => Url.Action("Index", new { page = x }))
+    </div>
+</div>
+
+
+<div class="col-lg-offset-10">
+    <div class="form-group ">
+        @Html.Action("GetAllTags")
+    </div>
+    <div class="form-group ">
+        @Html.Action("GetAllBlogs", "Blog")
+    </div>
+</div>

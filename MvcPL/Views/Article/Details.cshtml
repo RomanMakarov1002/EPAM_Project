@@ -1,0 +1,139 @@
+﻿@model MvcPL.Models.FullArticleViewModel
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<script>
+    $(document).ready(function () {
+        $("#commentArticle").click(function () {
+                var text = $("#textComment").val();
+                var idd = @Model.Id;
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("Create","Comment")',
+                    data: { Text: text, id: idd },
+                    dataType: "json",
+                    success: function (comment) {
+                        $("#textComment").val('');
+                        $("#commentContainer").append("<div class='panel panel-default' id=" + comment.Id + ">" +
+                            "<div class='panel-body'>" +
+                            "<img style='width: 50px; height: 50px;' src="+ comment.User.AvatarPath + "  alt='No avatar'/>" +
+                            "<span style='font-size: 12px;'>" + comment.User.NickName + " </span><span style='font-size: 12px;'>" + ProcessData(comment.DateTime) + " </span>" +
+                            "<br/>" +
+                            "<p style='font-size: 16px;' id='comment_" + comment.Id + "'>" + comment.Text + "</p>" +
+                            "</div>" +
+                            "</div>");
+                    }
+                });
+                return false;
+            }
+        );      
+    });
+    function Moderate() {
+        $(".glyphicon-edit").css('display', 'block');
+        $(".glyphicon-remove-circle").css('display', 'block');
+    };
+    
+    function ProcessData(data) {
+        var substringedDate = data.substring(6); 
+        var parsedIntDate = parseInt(substringedDate); 
+        var jsDate = new Date(parsedIntDate); 
+        var options = {
+            year: 'numeric',
+            month: 'numeric',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric',
+            second: 'numeric'
+        };
+        return jsDate.toLocaleString(options).replace(/\,/g,'');
+    }
+
+</script>
+<div class="col-md-10">
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div>
+                @foreach (var tag in Model.Tags)
+                {
+                    <a href="@Url.Action("SortedByTag", "Article", new {id = tag.Id})" class="btn btn-success btn-xs">@tag.Name</a>
+                }
+            </div>
+            <h2>@Model.Title</h2>
+            <ul class="list-inline">
+                <li><span><i class="glyphicon glyphicon-calendar"></i> @Model.CreationTime</span></li>
+                <li>|</li>
+                <li><span><i class="glyphicon glyphicon-user"></i> @Model.User.NickName</span></li>
+                <li>|</li>
+                <li><span><i class="glyphicon glyphicon-comment"></i> @Model.Comments.Count() </span></li>
+                <li>|</li>
+                <li><a href=@Url.Action("Index", "Blog", new {id = Model.Blog.Id}) class="btn btn-danger">@Model.Blog.Name</a></li>
+                <li><span><a href=@Url.Action("Edit", new {id = Model.Id}) class="glyphicon glyphicon-edit" style="float: right; display: none"></a>  </span></li>
+                <li><span><a href=@Url.Action("Delete", new {id = Model.Id}) class="glyphicon glyphicon-remove-circle" style="float: right; display: none"></a>  </span></li>
+                @if (User.IsInRole("Administrator") || User.IsInRole("Moderator"))
+                {
+                    <li class="btn btn-warning" onclick="Moderate()">Moderate</li>
+                }
+                else
+                {
+                    if (User.Identity.Name == Model.User.NickName)
+                    {
+                        <li><span><a href=@Url.Action("Edit", new {id = Model.Id}) class="glyphicon glyphicon-edit" style="float: right; "></a>  </span></li>
+                    }
+                }
+            </ul>
+            <img src=@Model.TitleImage width="100%" height="200px" alt="post img" style="max-height: 400px; margin: 7px 7px 7px 7px;">
+            <span style="word-wrap: break-word">@Model.Text</span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3" id="commentContainer">
+            @if (Model.Comments != null)
+            {
+                <h4>Comments:</h4>
+                foreach (var comment in Model.Comments)
+                {
+                    <div class="panel panel-default" id="@comment.Id">
+                        <div class="panel-body">
+                            <img style="width: 50px; height: 50px;" src=@comment.User.AvatarPath alt="No avatar"/>
+                            <span style="font-size: 12px;">@comment.User.NickName </span>
+                            <span style="font-size: 12px;"> @comment.DateTime</span>
+                            <span><a href=@Url.Action("Edit", "Comment", new {id = comment.Id}) class="glyphicon glyphicon-edit" style="float: right; display: none"></a> </span>
+                            <span><a href=@Url.Action("Delete", "Comment", new {id = comment.Id}) class="glyphicon glyphicon-remove-circle" style="float: right; display: none"></a></span>
+                            <br/>
+                            <p style="font-size: 16px;" id="comment_@comment.Id">@comment.Text</p>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+    <br/>
+    <hr/>
+    @using (Html.BeginForm("Create", "Comment", FormMethod.Post, new {enctype = "multipart/form-data", @class = "form-horizontal", @id = "formComment", @style = "margin-left: 15px;"}))
+    {
+        @Html.ValidationSummary(true)
+        @Html.AntiForgeryToken()
+        <div class="col-md-6 col-md-offset-3">
+            <div class="form-group">
+                <label class="control-label">Your comment: </label>
+                <input type="text" name="id" value=@Model.Id style="visibility: hidden"/>
+                <input type="text" class="form-control" name="Text" id="textComment" required>
+                <input type="submit" class="btn btn-default" id="commentArticle" value="Comment"/>
+            </div>
+        </div>
+    }
+</div>
+<div class="col-lg-offset-10">
+    <div class="form-group ">
+        @Html.Action("GetAllTags")
+    </div>
+    <div class="form-group ">
+        @Html.Action("GetAllBlogs", "Blog")
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

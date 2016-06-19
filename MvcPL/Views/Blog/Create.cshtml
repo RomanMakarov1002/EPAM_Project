@@ -1,0 +1,38 @@
+﻿@model MvcPL.Models.FullBlogViewModel
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<h2>New blog</h2>
+
+@using (Html.BeginForm()) {
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    <div class="col-md-6 col-md-offset-3">
+        <div class="form-group">
+            <div class="editor-label">
+                @Html.LabelFor(model => model.Name, new { @class = "col-md-2 control-label" })
+            </div>
+            <div class="editor-field">
+                @Html.TextBoxFor(model => model.Name, new { @class = "form-control", @placeholder = "Name", @required = true })
+                @Html.ValidationMessageFor(model => model.Name, null, new { @class = "col-md-offset-2" })
+            </div>
+        </div>
+        <div class="form-group col-md-offset-2">
+            <p>
+                <input type="submit" class="btn btn-primary" value="Create"/>
+            </p>
+        </div>
+        <div class="col-md-pull-9">
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    </div>
+   
+}
+
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

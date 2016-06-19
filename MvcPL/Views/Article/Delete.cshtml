@@ -1,0 +1,44 @@
+﻿@model MvcPL.Models.FullArticleViewModel
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<div class="col-md-10">
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <h2> Are you sure you want to delete this article?</h2>
+            <div>
+                @foreach (var tag in Model.Tags)
+                {
+                    <a href="@Url.Action("SortedByTag", "Article", new {id = tag.Id})" class="btn btn-success btn-xs">@tag.Name</a>
+                }
+            </div>
+            <h2>@Model.Title</h2>
+            <ul class="list-inline">
+                <li><span><i class="glyphicon glyphicon-calendar"></i> @Model.CreationTime</span></li>
+                <li>|</li>
+                <li><span><i class="glyphicon glyphicon-user"></i> @Model.User.NickName</span></li>
+                <li>|</li>
+                <li><span><i class="glyphicon glyphicon-comment"></i> @Model.Comments.Count() </span></li>
+                <li>|</li>
+            </ul>
+            <img src=@Model.TitleImage width="100%" height="200px" alt="post img" style="max-height: 400px; margin: 7px 7px 7px 7px;">
+            <span style="word-wrap: break-word">@Model.Text</span>
+        </div>
+    </div>
+    <br />
+    <hr />
+
+</div>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <p>
+        <input type="text" value=@Model.Blog.Id name="blogId" style="visibility: hidden"/>
+        <input type="text" value=@Model.User.Id name="userId" style="visibility: hidden" />
+        <input type="submit" class="form-control col-md-offset-2" value="Delete"/> |
+        @Html.ActionLink("Back to List", "Index")
+    </p>
+}

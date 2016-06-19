@@ -1,0 +1,93 @@
+﻿@model MvcPL.Models.FullArticleViewModel
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<script>
+    $(document).ready(function() {
+        $('.form-horizontal').validate({
+        rules : {
+            Tags: { required: true },
+            BlogId : {valueNotEquals : "default"}
+        },
+        messages:{
+            Tags: {
+                required: "You must check at least 1 box."
+            },
+            BlogId: { valueNotEquals: "Please select blog." }
+        }
+        });
+        $("label[for='Tags']").css("top", "100px");
+        $.validator.addMethod("valueNotEquals", function (value) {
+            return (value!= '');
+        });
+
+    })
+</script>
+
+<div class="col-lg-10">
+    @using (Html.BeginForm("Create", "Article", FormMethod.Post, new {enctype = "multipart/form-data", @class = "form-horizontal", role = "form"}))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+        @Html.HiddenFor(model => model.User)
+        <div class="row-fluid">
+            <div> 
+                <h2 style="text-align: center">Create new article</h2>
+                <hr />
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Title, new { @class = "col-md-2 control-label" })
+                    <div class="col-md-offset-2">
+                        @Html.TextBoxFor(model => model.Title, new { @class = "form-control", @placeholder = "Name", @required = true })
+                        @Html.ValidationMessageFor(model => model.Title, null , new { @class = "col-md-offset-4" })
+                    </div>
+                </div>
+                @Html.Action("GetUserBlogs", "Blog", new {id = Model.User.Id})
+                <br />
+                <div class="form-group">
+                    <label class="control-label col-md-2" for="Text">Content</label>
+                    <div class="col-md-offset-2">
+                        <textarea class="form-control " rows="6" name="Text" id="Text" required></textarea>
+                        @Html.ValidationMessageFor(model => model.Text, null, new { @class = "col-md-offset-2" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-lg-2 control-label">Tags</label>
+                    <div>
+                        <ul class="list-inline" id="tags">
+                            @Html.Action("PartialTags")
+                        </ul>
+                        @Html.ValidationMessageFor(model => model.Tags, null, new {@class = "col-md-offset-2", @style = "padding-top: 20px"})
+                    </div>
+                </div>
+                <br />
+                <div class="form-group">
+                    <label class="col-md-2 control-label">Title picture</label>
+                    <div class="col-md-3">
+                        Select an image to upload:
+                        <button class="btn btn-success glyphicon glyphicon-upload" type="button" onclick="document.getElementById('PictureInput').click()"></button>
+                        <input type="file" name="PictureInput" id="PictureInput"
+                               onchange="LoadPicture()" multiple accept="image/jpeg, image/png" style="visibility: hidden">
+                    </div>
+                    <div class="col-md-4">
+                        <img class="img-rounded" id="PictureImg" src="" alt="Image" style="max-width: 100%; max-height: 400px;" />
+                    </div>
+                </div>
+                <br />
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="submit" value="Create" class="btn btn-primary" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    <div>
+        @Html.ActionLink("Back", "Index", "Article")
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

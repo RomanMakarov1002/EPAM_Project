@@ -1,0 +1,49 @@
+﻿@model IEnumerable<MvcPL.Models.FullBlogViewModel>
+
+@{
+    ViewBag.Title = "Profile";
+}
+
+<div class="form-group col-md-8">
+    <h2> @Model.First().User.NickName</h2>
+    <div class="row-fluid">
+        <div class="form-group col-md-4">
+            <img src=@Model.First().User.AvatarPath width="300px" height="300px" style="width: 300px; height: 300px"/>
+        </div>
+        <div class="col-md-offset-4">
+            <label class="col-md-offset-2 form-control">@Model.First().User.Name</label>
+            <label class="col-md-offset-2 form-control">@Model.First().User.Surname</label>
+            <label class="col-md-offset-2 form-control">@Model.First().User.Email</label>
+            <h4><i class="col-md-offset-2">Your blogs:</i></h4>
+            @foreach (var blog in Model)
+            {
+                if (blog.Name != null)
+                {
+                    <a href=@Url.Action("Index", "Blog", new {id = blog.Id}) class="btn btn-danger col-md-offset-2">@blog.Name</a>
+                }
+            }
+        </div>
+        <div class="col-md-10">
+            <h2> Your Articles :</h2>
+            <div>
+                @foreach (var blog in Model)
+                {
+                    if (blog != null)
+                    {
+                        foreach (var article in blog.Articles)
+                        {
+                            <h4><a href=@Url.Action("Details", "Article", new {id = article.Id})>|@blog.Name|   @article.Title</a></h4>
+                        }
+                    }
+                }
+            </div>
+        </div>
+    </div>
+    
+</div>
+<div class="form-group col-md-offset-10">
+    <div class="btn-group-vertical">
+        <a href=@Url.Action("Create", "Blog") class="btn btn-warning" style="margin: 7px">Create new blog</a>
+        <a href=@Url.Action("Create", "Article") class="btn btn-warning" style="margin: 7px">Create new Article</a>
+    </div>
+</div>

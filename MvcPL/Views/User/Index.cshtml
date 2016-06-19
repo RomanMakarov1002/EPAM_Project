@@ -1,0 +1,58 @@
+﻿@model IEnumerable<MvcPL.Models.FullUserViewModel>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Users</h2>
+<div class="row-fluid">
+    <table class="col-md-12">
+        <tr>
+            <th class="col-md-2">
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th class="col-md-2">
+                @Html.DisplayNameFor(model => model.Surname)
+            </th>
+            <th class="col-md-2">
+                @Html.DisplayNameFor(model => model.NickName)
+            </th>
+            <th class="col-md-2">
+                @Html.DisplayNameFor(model => model.JoinTime)
+            </th>
+            <th class="col-md-3">Roles</th>
+            <th class="col-md-1">Manage</th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Surname)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NickName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.JoinTime)
+                </td>
+                <td>
+                    <ul class="list-inline">
+                    @foreach (var t in item.Roles)
+                    {
+                        <li> @Html.DisplayFor(modelItem => t.Name)</li>
+                    }    
+                    </ul>
+                    
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) 
+                </td>
+            </tr>
+        }
+
+    </table>
+</div>

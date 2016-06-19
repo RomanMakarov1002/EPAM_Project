@@ -1,0 +1,10 @@
+﻿@model IEnumerable<MvcPL.Models.SimpleTagViewModel>
+@foreach (var tag in Model)
+{
+    <li>
+        @tag.Name
+        <input type="checkbox" name="Tags" value="@tag.Id"> 
+    </li>
+}
+
+

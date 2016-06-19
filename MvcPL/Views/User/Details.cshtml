@@ -1,0 +1,76 @@
+﻿@model MvcPL.Models.SimpleUserViewModel
+
+@{
+    ViewBag.Title = "Details";
+}
+
+@using (Html.BeginForm("Details", "User", FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    <div class="row-fluid">
+        <div class="col-md-9 col-md-offset-3">
+            @Html.HiddenFor(model => model.Id)
+            @Html.HiddenFor(model => model.NickName)
+            @Html.HiddenFor(model => model.JoinTime)
+            @Html.HiddenFor(model => model.AvatarPath)
+            @Html.HiddenFor(model => model.Email)
+            @Html.HiddenFor(model => model.Password)
+            <div class="form-group">
+                @Html.LabelFor(model => model.Name, new {@class = "col-md-2 control-label"})
+                <div>
+                    @Html.TextBoxFor(model => model.Name, new {@class = "form-control", @placeholder = "Name", @required = true})
+                    @Html.ValidationMessageFor(model => model.Name, null, new {@class = "col-md-offset-2"})
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.Surname, new {@class = "col-md-2 control-label"})
+                <div>
+                    @Html.TextBoxFor(model => model.Surname, new {@class = "form-control", @placeholder = "Surname", @required = true})
+                    @Html.ValidationMessageFor(model => model.Surname, null, new {@class = "col-md-offset-2"})
+                </div>
+            </div>         
+            @*<div><button class="btn btn-primary btn-xs" type="button" onclick="$('#pas1').visibility = true; $('#pas2').visibility = true;">Change password</button></div>
+            <div class="form-group" id="pas1" style="visibility: hidden">
+                @Html.LabelFor(model => model.Password, new {@class = "col-md-2 control-label"})
+                <div>
+                    @Html.PasswordFor(model => model.Password, new {@class = "form-control", id="pastext1", @placeholder = "Password", @required = true})
+                    @Html.ValidationMessageFor(model => model.Password, null, new {@class = "col-md-offset-2"})
+                </div>
+            </div>
+            <div class="form-group" id ="pas2" style="visibility: hidden">
+                <label class="col-md-2 control-label">Confirm password</label>
+                <div>
+                    <input type="password" class="form-control" onchange="if ($('#pastext1').value != this.value) { $('#mesforPassword').innerHTML = 'Passwords not match' } else { $('#mesforPassword').innerHTML = '' }"placeholder="Password" required=""/>
+                    <span class="field-validation-error" id="mesforPassword"></span>
+                    
+                </div>
+            </div>*@         
+            <div class="form-group">
+                <label class="col-md-2 control-label">Avatar</label>
+                <div class="col-md-3">
+                    Click to change avatar:
+                    <button class="btn btn-success glyphicon glyphicon-upload" type="button" onclick="document.getElementById('PictureInput').click()"></button>
+                    <input type="file" name="PictureInput" id="PictureInput"
+                           onchange="LoadPicture()" multiple accept="image/jpeg, image/png" style="visibility: hidden">
+                </div>
+                <div class="col-md-4">
+                    <img class="img-rounded" id="PictureImg" src=@Model.AvatarPath alt="Your avatar" style="width: 128px; height: 128px;" />
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-offset-2">
+                    <input type="submit" class="btn btn-primary" value="Save"/>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

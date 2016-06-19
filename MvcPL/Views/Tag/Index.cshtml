@@ -1,0 +1,25 @@
+﻿@model IEnumerable<MvcPL.Models.SimpleTagViewModel>
+@{
+    ViewBag.Title = "Index";
+}
+<h4 style="margin: 7px;">Tags: </h4>
+<table>
+    <tr>
+        <th class="col-md-3"></th>
+        <th></th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                <a href=@Url.Action("SortedByTag", "Article", new {id = item.Id}) class="btn btn-success" style="margin: 7px">@item.Name</a>
+            </td>
+            <td>
+                @Html.ActionLink("Update tag", "Edit", "Tag", new {id = item.Id}, new {@class = "col-md-offset-2"})
+            </td>
+        </tr>
+    }
+</table>
+<div>
+    @Html.ActionLink("Create new tag", "Create", "Tag")    
+</div>

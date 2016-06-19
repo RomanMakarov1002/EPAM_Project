@@ -1,0 +1,12 @@
+﻿@model IEnumerable<MvcPL.Models.SimpleBlogViewModel>
+
+@{
+    ViewBag.Title = "AllBlogsPartial";
+}
+<h4 style="margin: 7px;">Blogs: </h4>
+<div class="btn-group-vertical">
+    @foreach (var item in Model)
+    {
+        <a href=@Url.Action("Index", "Blog", new {id = item.Id}) class="btn btn-danger" style="margin: 7px">@item.Name</a>
+    }
+</div>
