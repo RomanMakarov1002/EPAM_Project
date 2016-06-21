@@ -1,51 +1,58 @@
-﻿@model MvcPL.Models.SimpleUserViewModel
+﻿@model MvcPL.Models.UserEditorViewModel
 
 @{
     ViewBag.Title = "Details";
 }
+<script>
+    function changePassword() {
+        $("#currentPass").css('display', 'block');
+        $("#newPass").css('display', 'block');
+        $("#confirmedNewPass").css('display', 'block');
+    }
+</script>
 
 @using (Html.BeginForm("Details", "User", FormMethod.Post, new { enctype = "multipart/form-data", @class = "form-horizontal", role = "form" }))
 {
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true)
+    <h3>@Model.NickName </h3>
     <div class="row-fluid">
         <div class="col-md-9 col-md-offset-3">
             @Html.HiddenFor(model => model.Id)
-            @Html.HiddenFor(model => model.NickName)
-            @Html.HiddenFor(model => model.JoinTime)
             @Html.HiddenFor(model => model.AvatarPath)
-            @Html.HiddenFor(model => model.Email)
             @Html.HiddenFor(model => model.Password)
+            @Html.HiddenFor(model => model.NickName)
             <div class="form-group">
-                @Html.LabelFor(model => model.Name, new {@class = "col-md-2 control-label"})
+                @Html.LabelFor(model => model.Name, new { @class = "col-md-2 control-label" })
                 <div>
-                    @Html.TextBoxFor(model => model.Name, new {@class = "form-control", @placeholder = "Name", @required = true})
-                    @Html.ValidationMessageFor(model => model.Name, null, new {@class = "col-md-offset-2"})
+                    @Html.TextBoxFor(model => model.Name, new { @class = "form-control", @placeholder = "Name", @required = true })
+                    @Html.ValidationMessageFor(model => model.Name, null, new { @class = "col-md-offset-2" })
                 </div>
             </div>
             <div class="form-group">
-                @Html.LabelFor(model => model.Surname, new {@class = "col-md-2 control-label"})
+                @Html.LabelFor(model => model.Surname, new { @class = "col-md-2 control-label" })
                 <div>
-                    @Html.TextBoxFor(model => model.Surname, new {@class = "form-control", @placeholder = "Surname", @required = true})
-                    @Html.ValidationMessageFor(model => model.Surname, null, new {@class = "col-md-offset-2"})
-                </div>
-            </div>         
-            @*<div><button class="btn btn-primary btn-xs" type="button" onclick="$('#pas1').visibility = true; $('#pas2').visibility = true;">Change password</button></div>
-            <div class="form-group" id="pas1" style="visibility: hidden">
-                @Html.LabelFor(model => model.Password, new {@class = "col-md-2 control-label"})
-                <div>
-                    @Html.PasswordFor(model => model.Password, new {@class = "form-control", id="pastext1", @placeholder = "Password", @required = true})
-                    @Html.ValidationMessageFor(model => model.Password, null, new {@class = "col-md-offset-2"})
+                    @Html.TextBoxFor(model => model.Surname, new { @class = "form-control", @placeholder = "Surname", @required = true })
+                    @Html.ValidationMessageFor(model => model.Surname, null, new { @class = "col-md-offset-2" })
                 </div>
             </div>
-            <div class="form-group" id ="pas2" style="visibility: hidden">
-                <label class="col-md-2 control-label">Confirm password</label>
+            <div class="form-group">
+                <i class="col-md-offset-5" onclick="changePassword()"> Change Password</i>
+            </div>
+            <div class="form-group" id="newPass" style="display: none">
+                <label class="col-md-2 control-label">New password</label>
                 <div>
-                    <input type="password" class="form-control" onchange="if ($('#pastext1').value != this.value) { $('#mesforPassword').innerHTML = 'Passwords not match' } else { $('#mesforPassword').innerHTML = '' }"placeholder="Password" required=""/>
-                    <span class="field-validation-error" id="mesforPassword"></span>
-                    
+                    @Html.TextBoxFor(model => model.NewPassword, new { @class = "form-control", placeholder = "New password", required = true, type ="password" })
+                    @Html.ValidationMessageFor(model => model.NewPassword, null, new { @class = "col-md-offset-2" })
                 </div>
-            </div>*@         
+            </div>
+            <div class="form-group" id="confirmedNewPass" style="display: none">
+                <label class="control-label col-md-2">Confirm new password</label>
+                <div>
+                    @Html.TextBoxFor(model => model.ConfirmNewPassword, new { @class = "form-control", placeholder = "Confirm new password", required = true, type="password" })                
+                    @Html.ValidationMessageFor(model => model.ConfirmNewPassword, null, new { @class = "col-md-offset-2" })
+                </div>
+            </div>
             <div class="form-group">
                 <label class="col-md-2 control-label">Avatar</label>
                 <div class="col-md-3">
@@ -60,7 +67,7 @@
             </div>
             <div class="form-group">
                 <div class="col-md-offset-2">
-                    <input type="submit" class="btn btn-primary" value="Save"/>
+                    <input type="submit" class="btn btn-primary" value="Save" />
                 </div>
             </div>
         </div>
@@ -74,3 +81,5 @@
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 }
+
+

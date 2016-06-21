@@ -16,6 +16,6 @@ namespace BLL.Interfacies.Services
         UserEntity GetUserByNickname(string nickname);
         void UpdateUserRoles(FullUserEntity user);
         void UpdateUser(UserEntity user);
-        //etc.
+     
     }
 }

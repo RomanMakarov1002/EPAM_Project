@@ -38,7 +38,6 @@ namespace DAL.Concrete
             var result = _context.Articles.ToList().Where(x => x.Text.ToUpperInvariant().Contains(filter))
                 .Select(x => x.ToDalArticle()).ToList();
             return result;
-            //return _context.Articles.ToList().Where(x => x.Text.Contains(filter)).Select(x => x.ToDalArticle());
         }
 
         public IEnumerable<DalArticle> GetAll()
@@ -76,9 +75,6 @@ namespace DAL.Concrete
         {
             filter = filter.ToUpperInvariant();
             var res = filter.Split(' ', '.', '!', '?', ',');
-            //var result = _context.Articles.ToList().Where(x => x.Text.ToUpperInvariant().Contains(filter))
-            //    .Select(x => x.Text.Split(' ', '.', '!', '?'))
-            //    .Select(x => x.FirstOrDefault(e => e.ToUpperInvariant().StartsWith(res[res.Length - 1])));
             var result = _context.Articles.ToList().Where(x => x.Text.ToUpperInvariant().Contains(filter))
                 .Select(x => x.Text.Split(' ', '.', '!', '?', ',')).ToList();
             IEnumerable<string> query;
@@ -97,13 +93,7 @@ namespace DAL.Concrete
                 for (int i = 0; i < resStr.Length; i++)
                     resStr[i] += ' ';
             var str = String.Concat(resStr).ToLowerInvariant();
-            return query.Select(x => str + x.ToLowerInvariant());
-
-            //filter = filter.ToUpperInvariant();
-            //return
-            //    _context.Articles.ToList()
-            //        .Select(x => x.Text.Split(new char[] {' ', '.', '!', '?'}))
-            //        .Select(x => x.FirstOrDefault(e => e.ToUpperInvariant().Contains(filter)));
+            return query.Select(x => str + x?.ToLowerInvariant());
         }
 
         public void Update(DalArticle entity)

@@ -25,7 +25,7 @@
                     <div class="input-group">
                         <input type="text" name="term" id="searchInput" class="form-control" />
                         <div class="input-group-btn">
-                            <a href=@Url.Action("By","Search") class="btn btn-default"><i class="glyphicon glyphicon-search"></i></a>
+                            <button class="btn btn-default" onclick="search()" type="button"><i class="glyphicon glyphicon-search"></i></button>
                         </div>
                     </div>
             </div>
@@ -44,6 +44,11 @@
                 }
             });
         });
+
+        function search() {
+            var query = document.getElementById('searchInput').value;
+            window.location.href = '@Url.Action("Index","Search")' + '/By/' + query;
+        }
 </script>
 
 @RenderBody()

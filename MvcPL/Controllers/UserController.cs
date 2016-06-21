@@ -13,6 +13,7 @@ using MvcPL.Models;
 using MvcPL.Infrastructure;
 using MvcPL.Providers;
 
+
 namespace MvcPL.Controllers
 {
     public class UserController : Controller
@@ -134,13 +135,13 @@ namespace MvcPL.Controllers
         {
             if (nickname != User.Identity.Name)
                 return RedirectToAction("Registration");
-            return View(_userService.GetUserByNickname(nickname)?.ToMvcUser());
+            return View(_userService.GetUserByNickname(nickname)?.ToMvcEditorUser());
         }
 
         [HttpPost]
         [Authorize]
         [ValidateAntiForgeryToken]
-        public ActionResult Details(SimpleUserViewModel userViewModel, HttpPostedFileBase PictureInput)
+        public ActionResult Details(UserEditorViewModel userViewModel, HttpPostedFileBase PictureInput)
         {
             if (PictureInput != null)
             {
@@ -148,7 +149,8 @@ namespace MvcPL.Controllers
                 str.Append(ImageHelper.SaveFileToDisk(PictureInput, Server.MapPath("~/")));
                 userViewModel.AvatarPath = "/UserContent/" + str;
             }
-            _userService.UpdateUser(userViewModel.ToBllUser());
+            userViewModel.NewPassword = HashForPassword.GenerateHash(userViewModel.NewPassword);
+            _userService.UpdateUser(userViewModel.ToBllUserEntity());
             return View(userViewModel);
         }
 

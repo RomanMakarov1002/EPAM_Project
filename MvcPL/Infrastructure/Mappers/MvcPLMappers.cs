@@ -70,6 +70,33 @@ namespace MvcPL.Infrastructure.Mappers
                 Roles = fullModel.Roles.Select(role => role.ToBllSimpleRole())
             };
         }
+
+        public static UserEditorViewModel ToMvcEditorUser(this UserEntity userEntity)
+        {
+            return new UserEditorViewModel()
+            {
+                Id = userEntity.Id,
+                Name = userEntity.Name,
+                Surname = userEntity.Surname,
+                NickName = userEntity.NickName,
+                Password = userEntity.Password,
+                AvatarPath = userEntity.AvatarPath
+            };
+        }
+
+        public static UserEntity ToBllUserEntity(this UserEditorViewModel editorViewModel)
+        {
+            return new UserEntity()
+            {
+                Id = editorViewModel.Id,
+                Name = editorViewModel.Name,
+                Surname = editorViewModel.Surname,
+                NickName = editorViewModel.NickName,
+                Password = editorViewModel.NewPassword?? editorViewModel.Password,
+                AvatarPath = editorViewModel.AvatarPath
+            };
+        }
+
         #endregion
 
         #region RolesMapper

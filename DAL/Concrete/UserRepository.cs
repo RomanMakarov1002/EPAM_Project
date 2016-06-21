@@ -57,7 +57,6 @@ namespace DAL.Concrete
                 user.Name = entity.Name;
                 user.Surname = entity.Surname;
                 user.Password = entity.Password;
-                user.Email = entity.Email;
                 user.AvatarPath = entity.AvatarPath;
             }
         }
