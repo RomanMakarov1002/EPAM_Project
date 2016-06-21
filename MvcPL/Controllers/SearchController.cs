@@ -25,8 +25,6 @@ namespace MvcPL.Controllers
         {
             if (term != null && term.Length > 1)
             {
-                if (term.EndsWith(" "))
-                    term = term.Remove(term.Length - 1);
                 var tags = _tagService.SearchTags(term.Split(' ').First()).Select(x => new {label = x }).ToList();
                 if (term.Length > 3)
                 {

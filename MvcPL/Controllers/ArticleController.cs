@@ -27,6 +27,7 @@ namespace MvcPL.Controllers
             this._blogService = blogService;
         }
 
+
         public ActionResult Index(int page = 1)
         {
             int pageSize = 2;
@@ -43,7 +44,7 @@ namespace MvcPL.Controllers
             return View(result);
         }
 
-
+  
         public ActionResult SortedByTag(int id, int page = 1)
         {
             int pageSize = 2;

@@ -20,6 +20,7 @@
                 if (blog.Name != null)
                 {
                     <a href=@Url.Action("Index", "Blog", new {id = blog.Id}) class="btn btn-danger col-md-offset-2">@blog.Name</a>
+                    <span><a href=@Url.Action("Delete", "Blog", new {id = blog.Id}) class="glyphicon glyphicon-remove-circle"></a></span>
                 }
             }
         </div>

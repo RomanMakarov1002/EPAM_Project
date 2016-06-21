@@ -6,12 +6,14 @@
 <script>
     $(document).ready(function() {
         $('.btn-default').click(function() {
+            $('#loading').show();
             var chosenPage = this.innerHTML;
             $.ajax({
                 type: "GET",
                 url: "/Blog/Index",
                 data: { page: chosenPage, id : @Model.Id },
                 success : function(content) {
+                    $('#loading').hide();
                     $('#ArtContainer').html(content);
                     $(".btn").removeClass("btn-primary selected");
                     $("#page" + chosenPage + "").addClass("btn-primary selected");
@@ -28,7 +30,10 @@
     <h2 style="text-align: center">Blog @Model.Name</h2>
     <hr/>
     <div id="ArtContainer">
-        @Html.Partial("ContentPartial")        
+        @Html.Partial("ContentPartial")
+    </div>
+    <div class="col-md-offset-2" id="loading" style="display: none">
+        <img src="/ArticlesContent/loading.gif" height="128px" width="128px" />
     </div>
     <div class="btn-group col-md-offset-2">
         @Html.PageLink(Model.Paging, x => Url.Action("Index", new {page = x, id = @Model.Id}))

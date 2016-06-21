@@ -30,12 +30,6 @@ namespace MvcPL.Controllers
             return PartialView("AllBlogsPartial", blogs);
         }
 
-        //
-        // GET: /Blog/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
 
         //
         // GET: /Blog/Create
@@ -92,32 +86,10 @@ namespace MvcPL.Controllers
             return PartialView("UserBlogsPartial", blogs);
         }
           
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        //
-        // POST: /Blog/Edit/5
-
-        [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add update logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
+        
         //
         // GET: /Blog/Delete/5
-
+        [Authorize]
         public ActionResult Delete(int id)
         {
             var blog = _blogService.GetBlogById(id)?.ToMvcFullBlog();
@@ -130,18 +102,23 @@ namespace MvcPL.Controllers
         // POST: /Blog/Delete/5
 
         [HttpPost]
+        [Authorize]
         public ActionResult Delete(FullBlogViewModel fullblog)
         {
             try
             {
-                fullblog.User = _userService.GetUserByNickname(User.Identity.Name).ToMvcUser();
+                fullblog = _blogService.GetBlogById(fullblog.Id)?.ToMvcFullBlog();
+                if (User.Identity.Name != fullblog.User.NickName)
+                {
+                    return RedirectToAction("Index", "Article");
+                }
                 fullblog.Articles = _articleService.GetAllByBlog(fullblog.Id).Select(x => _articleService.GetFullArticleEntity(x).ToMvcFullArticle()).ToList();
                 _blogService.DeleteBlog(fullblog.ToBllFullBlog());
                 return RedirectToAction("Index");
             }
             catch
             {
-                return View();
+                return RedirectToAction("Profile");
             }
         }
 

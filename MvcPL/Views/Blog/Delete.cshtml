@@ -5,16 +5,10 @@
 }
 
 <h3>Are you sure you want to delete the blog @Model.Name?</h3>
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.Name)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.Name)
-    </div>
 @using (Html.BeginForm()) {
     @Html.AntiForgeryToken()
     <p>
-        <input type="submit" value="Delete" /> |
-        @Html.ActionLink("Back to List", "Index")
+        <input type="submit" class="form-control btn btn-primary" value="Delete"/>
     </p>
+    @Html.ActionLink("Back to List", "Index")
 }

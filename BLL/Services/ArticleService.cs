@@ -112,7 +112,7 @@ namespace BLL.Services
 
         public IEnumerable<string> SearchText(string filter)
         {
-            return uow.ArticleRepository.SearchText(filter).Where(x => x != null).Distinct();
+            return uow.ArticleRepository.SearchText(filter).Where(x => !String.IsNullOrWhiteSpace(x)).Distinct();
         }
 
         public void UpdateSimpleArticle(ArticleEntity article)

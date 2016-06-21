@@ -34,7 +34,37 @@ namespace MvcPL.Controllers
         {
             return View(_userService.GetAllUserEntities().Select(x => _userService.GetFullUserEntity(x).ToFullMvcUser()));
         }
-        
+
+        [HttpGet]
+        public ActionResult SignIn()
+        {
+            if (User.Identity.IsAuthenticated)
+                return RedirectToAction("Index", "Article");
+            return View("SignIn");
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public ActionResult SignIn(string NickName, string Password, string ReturnUrl)
+        {
+            if (Membership.ValidateUser(NickName, Password))
+            {
+                FormsAuthentication.SetAuthCookie(NickName, true);
+                if (Url.IsLocalUrl(ReturnUrl))
+                    return Redirect(ReturnUrl);
+                else
+                {
+                    return RedirectToAction("Index", "Article");
+                }
+            }
+            else
+            {
+                ModelState.AddModelError("", "Incorrect login or password");
+            }
+
+            return View("SignIn");
+        }
 
         [HttpGet]
         public ActionResult Registration()
@@ -46,8 +76,8 @@ namespace MvcPL.Controllers
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public ActionResult Registration(FullUserViewModel userViewModel, HttpPostedFileBase PictureInput)
-        {           
-            if (userViewModel.Captcha != (string) Session[Infrastructure.Captcha.CaptchaValueKey])
+        {
+            if (userViewModel.Captcha != (string)Session[Infrastructure.Captcha.CaptchaValueKey])
             {
                 ModelState.AddModelError("Captcha", "Incorrect captcha input");
                 return View(userViewModel);
@@ -60,7 +90,7 @@ namespace MvcPL.Controllers
                     ModelState.AddModelError("NickName", "User with this NickName already exists");
                 else
                 {
-                    var membershipUser = ((CustomMembershipProvider) Membership.Provider).GetUser(
+                    var membershipUser = ((CustomMembershipProvider)Membership.Provider).GetUser(
                         userViewModel.NickName, false);
                     if (membershipUser == null)
                     {
@@ -72,12 +102,12 @@ namespace MvcPL.Controllers
                         var str = new StringBuilder();
                         if (PictureInput != null)
                             str.Append(ImageHelper.SaveFileToDisk(PictureInput, Server.MapPath("~/")));
-                        userViewModel.AvatarPath = "/UserContent/" + str; 
+                        userViewModel.AvatarPath = "/UserContent/" + str;
                         _userService.CreateFullUser(userViewModel.ToFullBllUser());
                         FormsAuthentication.SetAuthCookie(userViewModel.NickName, false);
                         return RedirectToAction("Index", "Article");
-                    }                                       
-                    ModelState.AddModelError("", "This user already exist");                   
+                    }
+                    ModelState.AddModelError("", "This user already exist");
                 }
             }
             return View(userViewModel);
@@ -103,30 +133,6 @@ namespace MvcPL.Controllers
                 return Json(true);
             return Json(_userService.GetUserByEmail(Email) == null);
         }
-
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult SignIn(string NickName, string Password, string ReturnUrl)
-        {
-            if (Membership.ValidateUser(NickName, Password))
-            {
-                FormsAuthentication.SetAuthCookie(NickName, true);
-                if (Url.IsLocalUrl(ReturnUrl))
-                    return Redirect(ReturnUrl);
-                else
-                {
-                    return RedirectToAction("Index", "Article"); 
-                }
-            }
-            else
-            {
-                ModelState.AddModelError("", "Incorrect login or password");
-            }
-            
-            return View("SignIn");
-        }
-
 
 
         [HttpGet]

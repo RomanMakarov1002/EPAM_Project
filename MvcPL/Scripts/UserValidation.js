@@ -1,9 +1,6 @@
 ﻿$('#txtid').keyup(loginCheck);
 $('#txtEmail').keyup(emailCheck);
 
-var loginOk = false;
-var emailOk = false;
-
 function loginCheck() {
     var login = document.getElementById('txtid').value;
     $.ajax({
@@ -21,7 +18,6 @@ function IsLoginOk(exist) {
     else {
         document.getElementById('mesforNickname').innerHTML = "This NickName already exist";
     }
-    loginOk = exist;
 }
 
 function emailCheck() {
@@ -40,7 +36,6 @@ function IsEmailOk(exist) {
     else {
         document.getElementById('mesforEmail').innerHTML = "This email already exist";
     }
-    emailOk = exist;
 }
 
 function LoadPicture() {

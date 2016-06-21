@@ -6,12 +6,14 @@
 <script>
     $(document).ready(function() {
         $('.btn-default').click(function() {
+            $('#loading').show();
             var chosenPage = this.innerHTML;
             $.ajax({
                 type: "GET",
                 url: "Article/Index",
                 data: { page: chosenPage },
-                success : function(content) {
+                success: function(content) {
+                    $('#loading').hide();
                     $('#ArtContainer').html(content);
                     $(".btn").removeClass("btn-primary selected");
                     $("#page" + chosenPage + "").addClass("btn-primary selected");
@@ -19,7 +21,7 @@
             });
             return false;
         });
-    })
+    });
 </script>
 
 <div class="col-lg-10">
@@ -27,6 +29,9 @@
     <hr />
     <div id="ArtContainer">
         @Html.Partial("ContentPartial")
+    </div>
+    <div class="col-md-offset-2" id="loading" style="display: none">
+        <img src="/ArticlesContent/loading.gif" height="128px" width="128px"  />
     </div>
     <div class="btn-group col-md-offset-2">
         @Html.PageLink(Model.Paging, x => Url.Action("Index", new { page = x }))

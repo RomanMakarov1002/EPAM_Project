@@ -5,40 +5,46 @@
 }
 
 <script>
+
     $(document).ready(function () {
         $("#commentArticle").click(function () {
-                var text = $("#textComment").val();
-                var idd = @Model.Id;
+            if (!$("#textComment").val()) {
+                return false;
+            }
+            var text = $("#textComment").val();
+            var idd = @Model.Id;
+            $('#loading').show();
                 $.ajax({
                     type: "POST",
                     url: '@Url.Action("Create","Comment")',
                     data: { Text: text, id: idd },
                     dataType: "json",
                     success: function (comment) {
+                        $('#loading').hide();
                         $("#textComment").val('');
                         $("#commentContainer").append("<div class='panel panel-default' id=" + comment.Id + ">" +
                             "<div class='panel-body'>" +
                             "<img style='width: 50px; height: 50px;' src="+ comment.User.AvatarPath + "  alt='No avatar'/>" +
                             "<span style='font-size: 12px;'>" + comment.User.NickName + " </span><span style='font-size: 12px;'>" + ProcessData(comment.DateTime) + " </span>" +
                             "<br/>" +
-                            "<p style='font-size: 16px;' id='comment_" + comment.Id + "'>" + comment.Text + "</p>" +
+                            "<span style='word-wrap: break-word'>"+comment.Text +"</span>" +
                             "</div>" +
                             "</div>");
                     }
                 });
                 return false;
             }
-        );      
+        );
     });
     function Moderate() {
         $(".glyphicon-edit").css('display', 'block');
         $(".glyphicon-remove-circle").css('display', 'block');
     };
-    
+
     function ProcessData(data) {
-        var substringedDate = data.substring(6); 
-        var parsedIntDate = parseInt(substringedDate); 
-        var jsDate = new Date(parsedIntDate); 
+        var substringedDate = data.substring(6);
+        var parsedIntDate = parseInt(substringedDate);
+        var jsDate = new Date(parsedIntDate);
         var options = {
             year: 'numeric',
             month: 'numeric',
@@ -102,11 +108,14 @@
                             <span><a href=@Url.Action("Edit", "Comment", new {id = comment.Id}) class="glyphicon glyphicon-edit" style="float: right; display: none"></a> </span>
                             <span><a href=@Url.Action("Delete", "Comment", new {id = comment.Id}) class="glyphicon glyphicon-remove-circle" style="float: right; display: none"></a></span>
                             <br/>
-                            <p style="font-size: 16px;" id="comment_@comment.Id">@comment.Text</p>
+                            <span style="word-wrap: break-word">@comment.Text</span>
                         </div>
                     </div>
                 }
             }
+        </div>
+        <div class="col-md-6 col-md-offset-5" id="loading" style="display: none">
+            <img src="/ArticlesContent/loading.gif" height="128px" width="128px"/>
         </div>
     </div>
     <br/>
@@ -137,6 +146,8 @@
         @Html.Action("GetAllBlogs", "Blog")
     </div>
 </div>
+
+
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")

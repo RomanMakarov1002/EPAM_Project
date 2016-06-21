@@ -35,7 +35,7 @@ namespace MvcPL.Controllers
 
         //
         // GET: /Tag/Create
-
+        [Authorize(Roles = "Administrator")]
         public ActionResult Create()
         {
             return View();
