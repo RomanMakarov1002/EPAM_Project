@@ -304,6 +304,8 @@
     <Content Include="Views\Tag\Index.cshtml" />
     <Content Include="Views\Tag\Create.cshtml" />
     <Content Include="Views\Tag\Edit.cshtml" />
+    <Content Include="Views\Article\NotFound.cshtml" />
+    <Content Include="Views\Blog\BlogNotFound.cshtml" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

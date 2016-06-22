@@ -12,6 +12,7 @@ namespace MvcPL.Controllers
 {
     public class ArticleController : Controller
     {
+        public const int PageSize = 4;
         private readonly IArticleService _articleService;
         private readonly ITagService _tagService;
         private readonly IUserService _userService;
@@ -28,14 +29,13 @@ namespace MvcPL.Controllers
 
         public ActionResult Index(int page = 1)
         {
-            int pageSize = 4;
             var result = new PagingViewModel<FullArticleViewModel>();
             int totalItems =0;
             result.Items =
-                _articleService.GetArticlesForPage((page - 1) * pageSize, pageSize, ref totalItems)
+                _articleService.GetArticlesForPage((page - 1) * PageSize, PageSize, ref totalItems)
                     .Select(x => _articleService.GetFullArticleEntity(x).ToMvcFullArticle());
 
-            result.Paging = new Paging { PageNumber = page, PageSize = pageSize, TotalItems = totalItems};
+            result.Paging = new Paging { PageNumber = page, PageSize = PageSize, TotalItems = totalItems};
             if (Request.IsAjaxRequest())
             {
                 return PartialView("ContentPartial", result);
@@ -46,16 +46,15 @@ namespace MvcPL.Controllers
   
         public ActionResult SortedByTag(int id, int page = 1)
         {
-            int pageSize = 4;
             var result = new PagingViewModel<FullArticleViewModel>();
             result.Name = _tagService.GetTagEntity(id)?.Name;
             result.Id = id;
             int totalItems = 0;
             result.Items =
-                _articleService.GetForPageByTag(id, (page - 1) * pageSize, pageSize , ref totalItems)
+                _articleService.GetForPageByTag(id, (page - 1) * PageSize, PageSize , ref totalItems)
                     .Select(x => _articleService.GetFullArticleEntity(x).ToMvcFullArticle());
 
-            result.Paging = new Paging { PageNumber = page, PageSize = pageSize, TotalItems = totalItems };
+            result.Paging = new Paging { PageNumber = page, PageSize = PageSize, TotalItems = totalItems };
             if (Request.IsAjaxRequest())
             {
                 return PartialView("ContentPartial", result);
@@ -68,14 +67,17 @@ namespace MvcPL.Controllers
         // GET: /Article/Details/5
         public ActionResult Details(int id)
         {
-            try
-            {
-                return View(_articleService.GetFullArticleEntity(_articleService.GetArticleEntity(id))?.ToMvcFullArticle());
-            }
-            catch
-            {
-                return RedirectToAction("Index", "Article");
-            }
+                var result =
+                    _articleService.GetFullArticleEntity(_articleService.GetArticleEntity(id))?.ToMvcFullArticle();
+                if (result != null)
+                    return View(result);
+                return RedirectToAction("NotFound", "Article");
+            
+        }
+
+        public ActionResult NotFound()
+        {
+            return View();
         }
 
         //
@@ -94,30 +96,22 @@ namespace MvcPL.Controllers
         [HttpPost]
         [Authorize]
         public ActionResult Create(FullArticleViewModel articleViewModel, int[] Tags,  HttpPostedFileBase PictureInput, int BlogId = 0)
-        {
-            try
+        {            
+            if (ModelState.IsValidField("Text") && ModelState.IsValidField("Title"))
             {
-                if (ModelState.IsValidField("Text") && ModelState.IsValidField("Title"))
-                {
-
-                    if (BlogId == 0 || Tags == null)
-                        return RedirectToAction("Create");
-                    articleViewModel.CreationTime = DateTime.Now;
-                    articleViewModel.Tags = Tags.Select(x => _tagService.GetTagEntity(x)?.ToMvcSimpleTag());
-                    articleViewModel.User = _userService.GetUserByNickname(User.Identity.Name)?.ToMvcUser();
-                    articleViewModel.Blog = _blogService.GetSimpleBlogById(BlogId).ToMvcSimpleBlog();
-                    var str = new StringBuilder();
-                    if (PictureInput != null)
-                        str.Append(ImageHelper.SaveTitleImgToDisk(PictureInput, Server.MapPath("~/")));
-                    articleViewModel.TitleImage = "/ArticlesContent/" + str;
-                    _articleService.CreateFullArticleEntity(articleViewModel.ToBllFullArticle());
-                }
-                return RedirectToAction("Index");
-            }                               
-            catch
-            {
-                return RedirectToAction("Create");
+                if (BlogId == 0 || Tags == null)
+                    return RedirectToAction("Create");
+                articleViewModel.CreationTime = DateTime.Now;
+                articleViewModel.Tags = Tags.Select(x => _tagService.GetTagEntity(x)?.ToMvcSimpleTag());
+                articleViewModel.User = _userService.GetUserByNickname(User.Identity.Name)?.ToMvcUser();
+                articleViewModel.Blog = _blogService.GetSimpleBlogById(BlogId).ToMvcSimpleBlog();
+                var str = new StringBuilder();
+                if (PictureInput != null)
+                    str.Append(ImageHelper.SaveTitleImgToDisk(PictureInput, Server.MapPath("~/")));
+                articleViewModel.TitleImage = "/ArticlesContent/" + str;
+                _articleService.CreateFullArticleEntity(articleViewModel.ToBllFullArticle());
             }
+            return RedirectToAction("Index");                                                  
         }
 
        
@@ -145,34 +139,26 @@ namespace MvcPL.Controllers
         [Authorize]
         public ActionResult Edit(SimpleArticleViewModel article, int[] Tags, HttpPostedFileBase PictureInput)
         {
-            try
+            if (ModelState.IsValid)
             {
-                if (ModelState.IsValid)
+                var userId = _userService.GetUserByNickname(User.Identity.Name);
+                if (User.IsInRole("Administrator") || User.IsInRole("Moderator") || userId.Id == article.UserId)
                 {
-                    var userId = _userService.GetUserByNickname(User.Identity.Name);
-                    if (User.IsInRole("Administrator") || User.IsInRole("Moderator") || userId.Id == article.UserId)
+                    if (PictureInput != null)
                     {
-                        if (PictureInput != null)
-                        {
-                            StringBuilder str = new StringBuilder();
-                            str.Append(ImageHelper.SaveTitleImgToDisk(PictureInput, Server.MapPath("~/")));
-                            article.TitleImage = "/ArticlesContent/" + str;
-                        }
-                        if (Tags != null)
-                        {
-                            _articleService.UpdateTags(article.Id, Tags);
-                        }
-                        _articleService.UpdateSimpleArticle(article.ToBllSimpleArticle());
-                        return RedirectToAction("Index");
+                        StringBuilder str = new StringBuilder();
+                        str.Append(ImageHelper.SaveTitleImgToDisk(PictureInput, Server.MapPath("~/")));
+                        article.TitleImage = "/ArticlesContent/" + str;
                     }
-                    return RedirectToAction("Edit", new { id = article.Id });
+                    if (Tags != null)
+                    {
+                        _articleService.UpdateTags(article.Id, Tags);
+                    }
+                     _articleService.UpdateSimpleArticle(article.ToBllSimpleArticle());
                 }
-                return View();
+                return RedirectToAction("Index");
             }
-            catch
-            {
-                return RedirectToAction("Edit", new { id = article.Id });
-            }
+            return RedirectToAction("Edit", new { id = article.Id });
         }
 
         //
@@ -186,7 +172,7 @@ namespace MvcPL.Controllers
             {
                 return View(fullArticle);
             }
-            return HttpNotFound();
+            return RedirectToAction("NotFound","Article");
         }
 
         //
@@ -195,17 +181,10 @@ namespace MvcPL.Controllers
         [Authorize(Roles = "Administrator,Moderator")]
         public ActionResult Delete(FullArticleViewModel fullArticle, int blogId, int userId)
         {
-            try
-            {
-                fullArticle.User = _userService.GetUserEntity(userId)?.ToMvcUser();
-                fullArticle.Blog = _blogService.GetSimpleBlogById(blogId)?.ToMvcSimpleBlog();
-                _articleService.DeleteArticle(fullArticle.ToBllFullArticle());
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return RedirectToAction("Delete", new {id = fullArticle.Id});
-            }
+            fullArticle.User = _userService.GetUserEntity(userId)?.ToMvcUser();
+            fullArticle.Blog = _blogService.GetSimpleBlogById(blogId)?.ToMvcSimpleBlog();
+            _articleService.DeleteArticle(fullArticle.ToBllFullArticle());
+            return RedirectToAction("Index");
         }
 
         [HttpGet]

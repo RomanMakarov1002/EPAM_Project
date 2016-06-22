@@ -64,7 +64,7 @@ namespace MvcPL.Controllers
         [Authorize]
         public ActionResult Delete(int id)
         {
-            var comment = _commentService.GetCommentEntity(id).ToMvcFullComment();
+            var comment = _commentService.GetCommentEntity(id)?.ToMvcFullComment();
             if (comment != null)
                 return View(comment);
             return RedirectToAction("Index","Article");
@@ -75,17 +75,10 @@ namespace MvcPL.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Administrator,Moderator")]
-        public ActionResult Delete(int id, FullCommentViewModel commentModel)
+        public ActionResult Delete(FullCommentViewModel commentModel)
         {
-            try
-            {
-                _commentService.DeleteCommentEntity(commentModel.ToBllFullComment());
-                return RedirectToAction("Details","Article", new {id = commentModel.ArticleId});
-            }
-            catch
-            {
-                return RedirectToAction("Details", "Article", new { id = commentModel.ArticleId });
-            }
+            _commentService.DeleteCommentEntity(commentModel.ToBllFullComment());
+            return RedirectToAction("Details","Article", new {id = commentModel.ArticleId});
         }
     }
 }

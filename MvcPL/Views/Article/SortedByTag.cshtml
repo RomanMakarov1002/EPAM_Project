@@ -8,11 +8,12 @@
     $(document).ready(function() {
         $('.btn-default').click(function() {
             $('#loading').show();
+            var tagId = $('#Id').val();
             var chosenPage = this.innerHTML;
             $.ajax({
                 type: "GET",
                 url: "/Article/SortedByTag",
-                data: { page: chosenPage, id : @Model.Id },
+                data: { page: chosenPage, id : tagId },
                 success : function(content) {
                     $('#loading').hide();
                     window.scrollTo(0,0);
@@ -28,8 +29,16 @@
 
 </script>
 
+@Html.HiddenFor(model => model.Id)
 <div class="col-lg-10">
-    <h2 style="text-align: center">Sorted by tag <label class="label label-success" style="text-decoration: white;"> @Model.Name </label></h2>
+    @if (Model.Name == null)
+    {
+        <h2 style="text-align: center">Tag with this id not found</h2>
+    }
+    else
+    {
+        <h2 style="text-align: center">Sorted by tag <label class="label label-success" style="text-decoration: white;"> @Model.Name </label></h2>
+    } 
     <hr/>
     <div id="ArtContainer">
         @Html.Partial("ContentPartial")

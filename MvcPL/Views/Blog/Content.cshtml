@@ -7,11 +7,12 @@
     $(document).ready(function() {
         $('.btn-default').click(function() {
             $('#loading').show();
+            var blogId = $("#Id").val();
             var chosenPage = this.innerHTML;
             $.ajax({
                 type: "GET",
                 url: "/Blog/Index",
-                data: { page: chosenPage, id : @Model.Id },
+                data: { page: chosenPage, id : blogId },
                 success : function(content) {
                     $('#loading').hide();
                     window.scrollTo(0,0);
@@ -27,9 +28,14 @@
 
 </script>
 
+@Html.HiddenFor(model => model.Id)
 <div class="col-lg-10">
     <h2 style="text-align: center">Blog @Model.Name</h2>
     <hr/>
+    @if (Model.Name == null)
+    {
+        <h2 >Blog with this id Not Found</h2>
+    }
     <div id="ArtContainer">
         @Html.Partial("ContentPartial")
     </div>

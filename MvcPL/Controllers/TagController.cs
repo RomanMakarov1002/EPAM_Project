@@ -25,13 +25,6 @@ namespace MvcPL.Controllers
             return View(_tagService.GetAllTagEntities().Select(x => x.ToMvcSimpleTag()));
         }
 
-        //
-        // GET: /Tag/Details/5
-
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
 
         //
         // GET: /Tag/Create
@@ -48,17 +41,11 @@ namespace MvcPL.Controllers
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Administrator")]
         public ActionResult Create(SimpleTagViewModel tag)
-        {
-            try
-            {
-                if (ModelState.IsValid)
+        {        
+            if (ModelState.IsValid)
                 _tagService.CreateTag(tag.ToBllSimpleTag());
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return RedirectToAction("Create");
-            }
+            return RedirectToAction("Index");
+           
         }
 
         //
@@ -66,7 +53,10 @@ namespace MvcPL.Controllers
         [Authorize(Roles = "Administrator")]
         public ActionResult Edit(int id)
         {
-            return View(_tagService.GetTagEntity(id)?.ToMvcSimpleTag());
+            var tag = _tagService.GetTagEntity(id)?.ToMvcSimpleTag();
+            if (tag != null)
+                return View(tag);
+            return RedirectToAction("Index");
         }
 
         //
@@ -77,15 +67,9 @@ namespace MvcPL.Controllers
         [Authorize(Roles = "Administrator")]
         public ActionResult Edit(SimpleTagViewModel tag)
         {
-            try
-            {   if (ModelState.IsValid)
+            if (ModelState.IsValid)
                 _tagService.UpdateTag(tag.ToBllSimpleTag());
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return RedirectToAction("Edit", new {id = tag.Id});
-            }
+            return RedirectToAction("Index");                     
         }
         
     }

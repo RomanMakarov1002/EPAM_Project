@@ -6,28 +6,28 @@
 
 <script>
 
-    $(document).ready(function () {
-        $("#commentArticle").click(function () {
-            if (!$("#textComment").val()) {
-                return false;
-            }
-            var text = $("#textComment").val();
-            var idd = @Model.Id;
-            $('#loading').show();
+    $(document).ready(function() {
+        $("#commentArticle").click(function() {
+                if (!$("#textComment").val()) {
+                    return false;
+                }
+                var text = $("#textComment").val();
+                var artId = $("#Id").val();
+                $('#loading').show();
                 $.ajax({
                     type: "POST",
-                    url: '@Url.Action("Create","Comment")',
-                    data: { Text: text, id: idd },
+                    url: '@Url.Action("Create", "Comment")',
+                    data: { Text: text, id: artId },
                     dataType: "json",
-                    success: function (comment) {
+                    success: function(comment) {
                         $('#loading').hide();
                         $("#textComment").val('');
                         $("#commentContainer").append("<div class='panel panel-default' id=" + comment.Id + ">" +
                             "<div class='panel-body'>" +
-                            "<img style='width: 50px; height: 50px;' src="+ comment.User.AvatarPath + "  alt='No avatar'/>" +
+                            "<img style='width: 50px; height: 50px;' src=" + comment.User.AvatarPath + "  alt='No avatar'/>" +
                             "<span style='font-size: 12px;'>" + comment.User.NickName + " </span><span style='font-size: 12px;'>" + ProcessData(comment.DateTime) + " </span>" +
                             "<br/>" +
-                            "<span style='word-wrap: break-word'>"+comment.Text +"</span>" +
+                            "<span style='word-wrap: break-word'>" + comment.Text + "</span>" +
                             "</div>" +
                             "</div>");
                     }
@@ -36,6 +36,7 @@
             }
         );
     });
+
     function Moderate() {
         $(".glyphicon-edit").css('display', 'block');
         $(".glyphicon-remove-circle").css('display', 'block');
@@ -53,10 +54,12 @@
             minute: 'numeric',
             second: 'numeric'
         };
-        return jsDate.toLocaleString(options).replace(/\,/g,'');
+        return jsDate.toLocaleString(options).replace(/\,/g, '');
     }
 
 </script>
+
+@Html.HiddenFor(model => model.Id)
 <div class="col-md-10">
     <div class="panel panel-default">
         <div class="panel-body">

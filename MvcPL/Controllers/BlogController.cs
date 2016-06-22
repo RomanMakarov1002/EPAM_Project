@@ -12,6 +12,7 @@ namespace MvcPL.Controllers
 {
     public class BlogController : Controller
     {
+        public const int PageSize = 4;
         private readonly IBlogService _blogService;
         private readonly IUserService _userService;
         private readonly IArticleService _articleService;
@@ -45,35 +46,27 @@ namespace MvcPL.Controllers
         [Authorize]
         [ValidateAntiForgeryToken]
         public ActionResult Create(FullBlogViewModel blog)
-        {
-            try
+        {       
+            if (!String.IsNullOrWhiteSpace(blog.Name))
             {
-                if (!String.IsNullOrWhiteSpace(blog.Name))
-                {
-                    blog.User = _userService.GetUserByNickname(User.Identity.Name)?.ToMvcUser();
-                    _blogService.CreateBlog(blog.ToBllFullBlog());
-                    return RedirectToAction("Index", "Article");
-                }
-                return RedirectToAction("Create", "Blog");
+                 blog.User = _userService.GetUserByNickname(User.Identity.Name)?.ToMvcUser();
+                 _blogService.CreateBlog(blog.ToBllFullBlog());
+                return RedirectToAction("Index", "Article");
             }
-            catch
-            {
-                return RedirectToAction("Create", "Blog");
-            }
+            return RedirectToAction("Create", "Blog");
         }
 
 
         public ActionResult Index(int id, int page = 1)
         {
-            int pageSize = 4;
             var result = new PagingViewModel<FullArticleViewModel>();
             result.Name = _blogService.GetSimpleBlogById(id)?.Name;
             result.Id = id;
             int totalItems = 0;
             result.Items =
-                _articleService.GetForPageByBlog(id, (page - 1) * pageSize, pageSize, ref totalItems)
+                _articleService.GetForPageByBlog(id, (page - 1) * PageSize, PageSize, ref totalItems)
                     .Select(x => _articleService.GetFullArticleEntity(x).ToMvcFullArticle());
-            result.Paging = new Paging { PageNumber = page, PageSize = pageSize, TotalItems = totalItems };
+            result.Paging = new Paging { PageNumber = page, PageSize = PageSize, TotalItems = totalItems };
             if (Request.IsAjaxRequest())
             {
                 return PartialView("ContentPartial", result);
@@ -95,8 +88,13 @@ namespace MvcPL.Controllers
         {
             var blog = _blogService.GetBlogById(id)?.ToMvcFullBlog();
             if (blog == null)
-                return HttpNotFound();  //
+                return RedirectToAction("BlogNotFound");
             return View (blog);
+        }
+
+        public ActionResult BlogNotFound()
+        {
+            return View();
         }
 
         //
@@ -106,21 +104,14 @@ namespace MvcPL.Controllers
         [Authorize]
         public ActionResult Delete(FullBlogViewModel fullblog)
         {
-            try
+            fullblog = _blogService.GetBlogById(fullblog.Id)?.ToMvcFullBlog();
+            if (User.Identity.Name != fullblog.User.NickName)
             {
-                fullblog = _blogService.GetBlogById(fullblog.Id)?.ToMvcFullBlog();
-                if (User.Identity.Name != fullblog.User.NickName)
-                {
-                    return RedirectToAction("Index", "Article");
-                }
-                fullblog.Articles = _articleService.GetAllByBlog(fullblog.Id).Select(x => _articleService.GetFullArticleEntity(x).ToMvcFullArticle()).ToList();
-                _blogService.DeleteBlog(fullblog.ToBllFullBlog());
                 return RedirectToAction("Index", "Article");
             }
-            catch
-            {
-                return RedirectToAction("Profile");
-            }
+            fullblog.Articles = _articleService.GetAllByBlog(fullblog.Id)?.Select(x => _articleService.GetFullArticleEntity(x).ToMvcFullArticle()).ToList();
+            _blogService.DeleteBlog(fullblog.ToBllFullBlog());
+            return RedirectToAction("Profile");
         }
 
         public new ActionResult Profile()
@@ -140,7 +131,6 @@ namespace MvcPL.Controllers
                 } };
                 profile = res;
             } 
-         
             return View(profile);
         }
     }

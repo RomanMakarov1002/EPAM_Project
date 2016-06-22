@@ -18,6 +18,7 @@ namespace MvcPL.Controllers
 {
     public class UserController : Controller
     {
+        public const int DefaultRole = 3;
         private readonly IUserService _userService;
 
         private readonly IRoleService _roleService;
@@ -53,16 +54,10 @@ namespace MvcPL.Controllers
                 FormsAuthentication.SetAuthCookie(NickName, true);
                 if (Url.IsLocalUrl(ReturnUrl))
                     return Redirect(ReturnUrl);
-                else
-                {
-                    return RedirectToAction("Index", "Article");
-                }
+                return RedirectToAction("Index", "Article");
+       
             }
-            else
-            {
-                ModelState.AddModelError("", "Incorrect login or password");
-            }
-
+            ModelState.AddModelError("", "Incorrect login or password");
             return View("SignIn");
         }
 
@@ -95,7 +90,7 @@ namespace MvcPL.Controllers
                     if (membershipUser == null)
                     {
                         var t = new List<SimpleRoleViewModel>();
-                        t.Add(_roleService.GetRoleEntity(3)?.ToMvcSimpleRole());        //adding visitor role
+                        t.Add(_roleService.GetRoleEntity(DefaultRole)?.ToMvcSimpleRole());        //adding visitor role
                         userViewModel.Roles = t;
                         userViewModel.JoinTime = DateTime.Now;
                         userViewModel.Password = HashForPassword.GenerateHash(userViewModel.Password);
@@ -177,7 +172,6 @@ namespace MvcPL.Controllers
                 userViewModel.Roles = Role.Select(x => _roleService.GetRoleEntity(x).ToMvcSimpleRole());
                 _userService.UpdateUserRoles(userViewModel.ToFullBllUser());
             }
-            
             return RedirectToAction("Index");
         }
 

@@ -8,6 +8,7 @@
 @using (Html.BeginForm()) {
     @Html.AntiForgeryToken()
     <p>
+        @Html.HiddenFor(model => model.Id)
         <input type="submit" class="form-control btn btn-primary" value="Delete"/>
     </p>
     @Html.ActionLink("Back to List", "Index")

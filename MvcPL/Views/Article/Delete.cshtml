@@ -36,6 +36,7 @@
 {
     @Html.AntiForgeryToken()
     <p>
+        @Html.HiddenFor(model => model.Id)
         <input type="text" value=@Model.Blog.Id name="blogId" style="visibility: hidden"/>
         <input type="text" value=@Model.User.Id name="userId" style="visibility: hidden" />
         <input type="submit" class="form-control col-md-offset-2" value="Delete"/> |
