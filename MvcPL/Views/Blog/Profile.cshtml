@@ -29,7 +29,7 @@
             <div>
                 @foreach (var blog in Model)
                 {
-                    if (blog != null)
+                    if (blog.Articles != null)
                     {
                         foreach (var article in blog.Articles)
                         {

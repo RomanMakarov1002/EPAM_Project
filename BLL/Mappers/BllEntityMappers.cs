@@ -1,8 +1,5 @@
-﻿using System.Linq;
-using System.Runtime.Serialization.Formatters;
-using BLL.Interfacies.Entities;
+﻿using BLL.Interfacies.Entities;
 using BLL.Interfacies.Entities.FullModel;
-using DAL.Interface.DTO;
 using DAL.Interfacies.DTO;
 
 namespace BLL.Mappers

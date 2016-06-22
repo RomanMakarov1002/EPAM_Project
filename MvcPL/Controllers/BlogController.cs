@@ -65,7 +65,7 @@ namespace MvcPL.Controllers
 
         public ActionResult Index(int id, int page = 1)
         {
-            int pageSize = 2;
+            int pageSize = 4;
             var result = new PagingViewModel<FullArticleViewModel>();
             result.Name = _blogService.GetSimpleBlogById(id)?.Name;
             result.Id = id;

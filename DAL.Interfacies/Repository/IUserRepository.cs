@@ -4,7 +4,7 @@ using DAL.Interfacies.DTO;
 
 namespace DAL.Interfacies.Repository
 {
-    public interface IUserRepository : IRepository<DalUser>//Add user repository methods!
+    public interface IUserRepository : IRepository<DalUser>
     {
         DalUser GetUserByEmail(string email);
         DalUser GetUserByNickname(string nickname);

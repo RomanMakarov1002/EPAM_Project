@@ -14,6 +14,6 @@ namespace DAL.Interfacies.Repository
         IBlogRepository BlogRepository { get; }
 
         void Commit();
-        //Rollback
+    
     }
 }

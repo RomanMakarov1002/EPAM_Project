@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
@@ -30,7 +28,7 @@ namespace MvcPL.Controllers
 
         public ActionResult Index(int page = 1)
         {
-            int pageSize = 2;
+            int pageSize = 4;
             var result = new PagingViewModel<FullArticleViewModel>();
             result.Items =
                 _articleService.GetAllArticleEntities().Skip((page - 1) * pageSize).Take(pageSize)
@@ -47,7 +45,7 @@ namespace MvcPL.Controllers
   
         public ActionResult SortedByTag(int id, int page = 1)
         {
-            int pageSize = 2;
+            int pageSize = 4;
             var result = new PagingViewModel<FullArticleViewModel>();
             result.Name = _tagService.GetTagEntity(id)?.Name;
             result.Id = id;
@@ -167,7 +165,7 @@ namespace MvcPL.Controllers
                     }
                     return RedirectToAction("Edit", new { id = article.Id });
                 }
-                return RedirectToAction("Index");
+                return View();
             }
             catch
             {

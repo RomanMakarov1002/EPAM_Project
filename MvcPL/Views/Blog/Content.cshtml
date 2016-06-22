@@ -14,6 +14,7 @@
                 data: { page: chosenPage, id : @Model.Id },
                 success : function(content) {
                     $('#loading').hide();
+                    window.scrollTo(0,0);
                     $('#ArtContainer').html(content);
                     $(".btn").removeClass("btn-primary selected");
                     $("#page" + chosenPage + "").addClass("btn-primary selected");
