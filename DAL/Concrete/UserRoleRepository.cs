@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using DAL.DALMappers;
 using DAL.Interfacies.DTO;
 using DAL.Interfacies.Repository;

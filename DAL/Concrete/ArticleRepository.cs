@@ -36,7 +36,7 @@ namespace DAL.Concrete
         {
             filter = filter.ToUpperInvariant();
             var result = _context.Articles.ToList().Where(x => x.Text.ToUpperInvariant().Contains(filter))
-                .Select(x => x.ToDalArticle()).ToList();
+                .Select(x => x.ToDalArticle());
             return result;
         }
 
@@ -76,7 +76,7 @@ namespace DAL.Concrete
             filter = filter.ToUpperInvariant();
             var res = filter.Split(' ', '.', '!', '?', ',');
             var result = _context.Articles.ToList().Where(x => x.Text.ToUpperInvariant().Contains(filter))
-                .Select(x => x.Text.Split(' ', '.', '!', '?', ',')).ToList();
+                .Select(x => x.Text.Split(' ', '.', '!', '?', ','));
             IEnumerable<string> query;
             if (res.Length > 1)
             {

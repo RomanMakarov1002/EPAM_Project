@@ -114,7 +114,7 @@ namespace MvcPL.Controllers
                 }
                 fullblog.Articles = _articleService.GetAllByBlog(fullblog.Id).Select(x => _articleService.GetFullArticleEntity(x).ToMvcFullArticle()).ToList();
                 _blogService.DeleteBlog(fullblog.ToBllFullBlog());
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Article");
             }
             catch
             {

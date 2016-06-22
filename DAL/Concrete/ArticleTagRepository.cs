@@ -30,11 +30,7 @@ namespace DAL.Concrete
 
         public void DeleteAllByArticle(int articleId)
         {
-            var articlesId = _context.ArticleTags.ToList().Where(x => x.ArticleId == articleId);
-            foreach (var item in articlesId)
-            {
-                _context.ArticleTags.Remove(item);
-            }
+            _context.ArticleTags.Where(x => x.ArticleId == articleId).ToList().Select(x => _context.ArticleTags.Remove(x));
         }
 
         public IEnumerable<DalArticleTag> GetAll()

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using BLL.Interfacies.Entities;
 using BLL.Interfacies.Entities.FullModel;
 using BLL.Interfacies.Services;
@@ -28,12 +26,12 @@ namespace BLL.Services
 
         public void DeleteBlog(FullBlogEntity entity)
         {
-            foreach (var article in entity.Articles)
+            entity.Articles.ToList().ForEach(x =>
             {
-                _uow.CommentRepository.DeleteAllByArticle(article.Id);
-                _uow.ArticleRepository.Delete(article.ToDalArticle());
-                _uow.ArticleTagRepository.DeleteAllByArticle(article.Id);
-            }
+                _uow.CommentRepository.DeleteAllByArticle(x.Id);
+                _uow.ArticleRepository.Delete(x.ToDalArticle());
+                _uow.ArticleTagRepository.DeleteAllByArticle(x.Id);
+            });
             _uow.BlogRepository.Delete(entity.ToDalBlog());
             _uow.Commit();
         }

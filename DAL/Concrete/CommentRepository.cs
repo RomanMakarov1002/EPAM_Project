@@ -35,11 +35,8 @@ namespace DAL.Concrete
 
         public void DeleteAllByArticle(int articleId)
         {
-            var comments = _context.Comments.ToList().Where(x => x.ArticleId == articleId);
-            foreach (var item in comments)
-            {
-                _context.Comments.Remove(item);
-            }
+            _context.Comments.Where(x => x.ArticleId == articleId).ToList().Select(x => _context.Comments.Remove(x));
+
         }
 
         public IEnumerable<DalComment> GetAll()

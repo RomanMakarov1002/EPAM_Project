@@ -65,12 +65,7 @@ namespace BLL.Services
                 AvatarPath = fullUser.AvatarPath
             };
             uow.UserRepository.Create(user.ToDalUser());
-            var roles =
-                fullUser.Roles.Select(x => new UserRoleEntity {UserId = fullUser.Id, RoleId = x.Id}.ToDalUserRole());
-            foreach (var item in roles)
-            {
-                uow.UserRoleRepository.Create(item);
-            }
+            fullUser.Roles.Select(x => new UserRoleEntity {UserId = fullUser.Id, RoleId = x.Id}.ToDalUserRole()).ToList().ForEach(x => uow.UserRoleRepository.Create(x));
             uow.Commit();
         }
 
@@ -100,10 +95,7 @@ namespace BLL.Services
         public void UpdateUserRoles(FullUserEntity user)
         {
             uow.UserRoleRepository.DeleteAllByUserId(user.Id);
-            foreach (var item in user.Roles)
-            {
-                uow.UserRoleRepository.Create(new DalUserRole() {UserId = user.Id, RoleId = item.Id});
-            }
+            user.Roles.ToList().ForEach(x => uow.UserRoleRepository.Create(new DalUserRole() {UserId = user.Id, RoleId = x.Id}));
             uow.Commit();
         }
 

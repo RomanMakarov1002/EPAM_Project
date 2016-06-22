@@ -33,7 +33,6 @@ namespace DAL.Concrete
 
         public DalUser GetByPredicate(Expression<Func<DalUser, bool>> f)
         {
-            //Expression<Func<DalUser, bool>> -> Expression<Func<User, bool>> (!)
             throw new NotImplementedException();
         }
 
