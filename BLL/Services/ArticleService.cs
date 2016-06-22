@@ -91,6 +91,25 @@ namespace BLL.Services
             return uow.ArticleRepository.GetAllByTag(id).Select(x => x.ToBllArticle());
         }
 
+        public IEnumerable<ArticleEntity> GetArticlesForPage(int skipCount, int takeCount, ref int totalSize)
+        {
+            return uow.ArticleRepository.GetForPage(skipCount, takeCount, ref totalSize).Select(x => x.ToBllArticle());
+        }
+
+        public IEnumerable<ArticleEntity> GetForPageByBlog(int blogId, int skipCount, int takeCount, ref int totalSize)
+        {
+            return
+                uow.ArticleRepository.GetForPageByBlog(blogId, skipCount, takeCount, ref totalSize)
+                    .Select(x => x.ToBllArticle());
+        }
+
+        public IEnumerable<ArticleEntity> GetForPageByTag(int tagId, int skipCount, int takeCount, ref int totalSize)
+        {
+            return
+                uow.ArticleRepository.GetForPageByTag(tagId, skipCount, takeCount, ref totalSize)
+                    .Select(x => x.ToBllArticle());
+        }
+
         public FullArticleEntity GetFullArticleEntity(ArticleEntity e)
         {
             if (e == null)

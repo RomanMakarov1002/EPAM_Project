@@ -47,12 +47,12 @@ namespace DAL.Concrete
 
         public IEnumerable<DalArticle> GetAllByBlog(int id)
         {
-            return _context.Articles.ToList().Where(x => x.BlogId == id).Select(e => e.ToDalArticle()).OrderByDescending(x => x.CreationTime);
+            return _context.Articles.Where(x => x.BlogId == id).ToList().Select(e => e.ToDalArticle()).OrderByDescending(x => x.CreationTime);
         }
 
         public IEnumerable<DalArticle> GetAllByTag(int id)
         {
-            var tags = _context.ArticleTags.ToList().Where(x => x.TagId == id);
+            var tags = _context.ArticleTags.Where(x => x.TagId == id).ToList();
             return tags.Select(x => _context.Articles.Find(x.ArticleId).ToDalArticle()).OrderByDescending(x => x.CreationTime);
         }
 
@@ -69,6 +69,30 @@ namespace DAL.Concrete
         public DalArticle GetByPredicate(Expression<Func<DalArticle, bool>> f)
         {
             throw new NotImplementedException();
+        }
+
+        public IEnumerable<DalArticle> GetForPage(int skipCount, int takeCount, ref int totalSize)
+        {
+            totalSize = _context.Articles.Count();
+            return
+                _context.Articles.OrderByDescending(x => x.CreationTime)
+                    .Skip(skipCount)
+                    .Take(takeCount)
+                    .ToList()
+                    .Select(x => x.ToDalArticle());
+        }
+
+        public IEnumerable<DalArticle> GetForPageByBlog(int blogId, int skipCount, int takeCount, ref int totalSize)
+        {
+            totalSize = _context.Articles.Count(x => x.BlogId == blogId);
+            return _context.Articles.Where(x => x.BlogId == blogId).OrderByDescending(x => x.CreationTime).Skip(skipCount).Take(takeCount).ToList().Select(x => x.ToDalArticle());
+        }
+
+        public IEnumerable<DalArticle> GetForPageByTag(int id, int skipCount, int takeCount, ref int totalSize)
+        {           
+            var tags = _context.ArticleTags.Where(x => x.TagId == id).ToList();
+            totalSize = tags.Count();
+            return tags.Select(x => _context.Articles.Find(x.ArticleId)).OrderByDescending(x => x.CreationTime).Skip(skipCount).Take(takeCount).Select(x => x.ToDalArticle());
         }
 
         public IEnumerable<string> SearchText(string filter)

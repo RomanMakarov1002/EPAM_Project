@@ -69,10 +69,11 @@ namespace MvcPL.Controllers
             var result = new PagingViewModel<FullArticleViewModel>();
             result.Name = _blogService.GetSimpleBlogById(id)?.Name;
             result.Id = id;
+            int totalItems = 0;
             result.Items =
-                _articleService.GetAllByBlog(id).Skip((page - 1) * pageSize).Take(pageSize)
+                _articleService.GetForPageByBlog(id, (page - 1) * pageSize, pageSize, ref totalItems)
                     .Select(x => _articleService.GetFullArticleEntity(x).ToMvcFullArticle());
-            result.Paging = new Paging { PageNumber = page, PageSize = pageSize, TotalItems = _articleService.GetAllByBlog(id).Count() };
+            result.Paging = new Paging { PageNumber = page, PageSize = pageSize, TotalItems = totalItems };
             if (Request.IsAjaxRequest())
             {
                 return PartialView("ContentPartial", result);

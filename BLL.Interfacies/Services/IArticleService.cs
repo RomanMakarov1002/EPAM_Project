@@ -19,5 +19,8 @@ namespace BLL.Interfacies.Services
         IEnumerable<ArticleEntity> GetAllByBlog (int blogId);
         void UpdateTags(int articleId, int[] tagsId);
         void UpdateSimpleArticle(ArticleEntity article);
+        IEnumerable<ArticleEntity> GetArticlesForPage(int skipCount, int takeCount, ref int totalSize);
+        IEnumerable<ArticleEntity> GetForPageByTag(int tagId, int skipCount, int takeCount, ref int totalSize);
+        IEnumerable<ArticleEntity> GetForPageByBlog(int blogId, int skipCount, int takeCount, ref int totalSize);
     }
 }

@@ -30,11 +30,12 @@ namespace MvcPL.Controllers
         {
             int pageSize = 4;
             var result = new PagingViewModel<FullArticleViewModel>();
+            int totalItems =0;
             result.Items =
-                _articleService.GetAllArticleEntities().Skip((page - 1) * pageSize).Take(pageSize)
+                _articleService.GetArticlesForPage((page - 1) * pageSize, pageSize, ref totalItems)
                     .Select(x => _articleService.GetFullArticleEntity(x).ToMvcFullArticle());
 
-            result.Paging = new Paging { PageNumber = page, PageSize = pageSize, TotalItems = _articleService.GetAllArticleEntities().Count() };
+            result.Paging = new Paging { PageNumber = page, PageSize = pageSize, TotalItems = totalItems};
             if (Request.IsAjaxRequest())
             {
                 return PartialView("ContentPartial", result);
@@ -49,11 +50,12 @@ namespace MvcPL.Controllers
             var result = new PagingViewModel<FullArticleViewModel>();
             result.Name = _tagService.GetTagEntity(id)?.Name;
             result.Id = id;
+            int totalItems = 0;
             result.Items =
-                _articleService.GetArticlesByTag(id).Skip((page - 1) * pageSize).Take(pageSize)
+                _articleService.GetForPageByTag(id, (page - 1) * pageSize, pageSize , ref totalItems)
                     .Select(x => _articleService.GetFullArticleEntity(x).ToMvcFullArticle());
 
-            result.Paging = new Paging { PageNumber = page, PageSize = pageSize, TotalItems = _articleService.GetArticlesByTag(id).Count() };
+            result.Paging = new Paging { PageNumber = page, PageSize = pageSize, TotalItems = totalItems };
             if (Request.IsAjaxRequest())
             {
                 return PartialView("ContentPartial", result);
