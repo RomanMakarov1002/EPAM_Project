@@ -110,8 +110,9 @@ namespace MvcPL.Controllers
                     str.Append(ImageHelper.SaveTitleImgToDisk(PictureInput, Server.MapPath("~/")));
                 articleViewModel.TitleImage = "/ArticlesContent/" + str;
                 _articleService.CreateFullArticleEntity(articleViewModel.ToBllFullArticle());
+                return RedirectToAction("Index");
             }
-            return RedirectToAction("Index");                                                  
+            return RedirectToAction("Create");
         }
 
        
