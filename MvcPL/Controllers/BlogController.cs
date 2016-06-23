@@ -118,7 +118,7 @@ namespace MvcPL.Controllers
         {
             var user = _userService.GetUserByNickname(User.Identity.Name);
             var profile =
-                    _blogService.GetAllByUser(user.Id).Select(x => _blogService.GetBlogById(x.Id).ToMvcFullBlog()).ToList();
+                _blogService.GetAllByUser(user.Id).Select(x => _blogService.GetBlogById(x.Id)?.ToMvcFullBlog()).ToList();
             foreach (var item in profile)
             {
                 item.Articles = _articleService.GetAllByBlog(item.Id).Select(x => _articleService.GetFullArticleEntity(x).ToMvcFullArticle()).ToList();

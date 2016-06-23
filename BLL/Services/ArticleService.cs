@@ -144,7 +144,7 @@ namespace BLL.Services
         {
             if (tagsId != null && articleId != 0)
             {
-                uow.ArticleTagRepository.DeleteAllByArticle(articleId);     
+                uow.ArticleTagRepository.DeleteAllByArticle(articleId);             
                 for (int i = 0; i < tagsId.Length; i++)
                 {
                     uow.ArticleTagRepository.Create(new DalArticleTag() {ArticleId = articleId, TagId = tagsId[i]});
